@@ -1,0 +1,3 @@
+[submodule "lib/sleepy.mongoose"]
+	path = lib/sleepy.mongoose
+	url = git://github.com/10gen-labs/sleepy.mongoose.git
