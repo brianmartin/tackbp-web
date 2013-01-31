@@ -1,7 +1,16 @@
 extends layout
 
 block content
+  a(href="/docs") All docs
   h1= title
-  p #{id}
-
   div(id="pos-div")
+
+  script(type="text/javascript")
+    init = function () {
+      // get the doc id from the parameters
+      id = window.location.search.substring(4);
+      // retrieve and render it
+      getMongoDoc(id);
+    }
+
+    $(document).load(init())

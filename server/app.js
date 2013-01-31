@@ -29,8 +29,8 @@ app.configure('development', function(){
 });
 
 app.get('/', routes.index);
-app.get('/users', user.list);
-app.get('/doc', doc.list);
+app.get('/docs', doc.list);
+app.get('/doc', doc.single);
 app.use("/assets", express.static(__dirname + '/assets'));
 
 http.createServer(app).listen(app.get('port'), function(){

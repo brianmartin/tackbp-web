@@ -1,0 +1,19 @@
+extends layout
+
+block content
+  h1= title
+  div(id="doc-list")
+  script(typ="text/javascript")
+    var success = function(data, textStatus, jqXHR) {
+        console.log(data.results);
+        _.each(data.results, function(doc) {
+            $("#doc-list").append('<a href="http://localhost:3000/doc?id=' + doc._id.$oid + '">' + doc.name + '</a>')
+        })
+    };
+
+    init = function () {
+      getMongoDocList(success)
+    };
+
+    $(document).load(init());
+

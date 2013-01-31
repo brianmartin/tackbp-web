@@ -36,27 +36,39 @@ collData = {
     } ]
 }
 
-docData = {
-    # Our text of choice
-    text     : "Ed O'Kelley was the man who shot the man who shot Jesse James.",
-    # The entities entry holds all entity annotations
-    entities : [
-        ['T1', 'Person', [[0, 11]]],
-        ['T2', 'Person', [[20, 23]]],
-        ['T3', 'Person', [[37, 40]]],
-        ['T4', 'Person', [[50, 61]]],
-    ],
+#docData = {
+#    # Our text of choice
+#    text     : "Ed O'Kelley was the man who shot the man who shot Jesse James.",
+#    # The entities entry holds all entity annotations
+#    entities : [
+#        ['T1', 'Person', [[0, 11]]],
+#        ['T2', 'Person', [[20, 23]]],
+#        ['T3', 'Person', [[37, 40]]],
+#        ['T4', 'Person', [[50, 61]]],
+#    ],
+# }
+
+getDocData = () -> {
+    text: (
+        doc.tstrings.join(' ')
+    ),
+    entities: (
+        _.zip(
+          # index with 'T'
+          _.map(_.range(doc.tstarts.length), (elt) -> "T" + elt)
+          # tag
+          doc.tpos,
+          _.map(
+              _.zip(
+                  # start offsets
+                  doc.sstarts,
+                  # end offsets
+                  _.map(_.zip(doc.sstarts, doc.slengths), (elt) -> elt[0] + elt[1])
+              )
+              (elt) -> [elt]
+          )
+        )
+    )
 }
 
-head.ready(() ->
-    Util.embed(
-        # id of the div element where brat should embed the visualisations
-        'pos-div',
-        # object containing collection data
-        collData,
-        # object containing document data
-        docData,
-        # Array containing locations of the visualisation fonts
-        webFontURLs
-    )
-)
+
