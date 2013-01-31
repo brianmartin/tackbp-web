@@ -1,0 +1,3 @@
+[submodule "mongo_rest/sleepy.mongoose"]
+	path = mongo_rest/sleepy.mongoose
+	url = git://github.com/10gen-labs/sleepy.mongoose.git
