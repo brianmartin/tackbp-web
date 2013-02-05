@@ -25,10 +25,11 @@ webFontURLs = [
 ]
 
 
+# this doesnt seem to be working
 collData = {
     entity_types: [ {
-            type   : 'Person',
-            labels : ['Person', 'Per'],
+            type   : 'POS',
+            labels : ['NNP'],
             # Blue is a nice colour for a person?
             bgColor: "#7fa2ff",
             # Use a slightly darker version of the bgColor for the border
@@ -36,27 +37,25 @@ collData = {
     } ]
 }
 
-#docData = {
-#    # Our text of choice
-#    text     : "Ed O'Kelley was the man who shot the man who shot Jesse James.",
-#    # The entities entry holds all entity annotations
-#    entities : [
-#        ['T1', 'Person', [[0, 11]]],
-#        ['T2', 'Person', [[20, 23]]],
-#        ['T3', 'Person', [[37, 40]]],
-#        ['T4', 'Person', [[50, 61]]],
-#    ],
-# }
+# Example doc data
+#
+# docData = {
+#     # Our text of choice
+#     text     : "Ed O'Kelley was the man who shot the man who shot Jesse James.",
+#     # The entities entry holds all entity annotations
+#     entities : [
+#         ['T1', 'Person', [[0, 11]]],
+#         ['T2', 'Person', [[20, 23]]],
+#         ['T3', 'Person', [[37, 40]]],
+#         ['T4', 'Person', [[50, 61]]],
+#     ],
+#  }
 
-getDocData = () -> {
-    text: (
-        doc.tstrings.join(' ')
-    ),
-    entities: (
+getDocData = (doc) -> {
+    text: doc.text
+    entities:
         _.zip(
-          # index with 'T'
           _.map(_.range(doc.tstarts.length), (elt) -> "T" + elt)
-          # tag
           doc.tpos,
           _.map(
               _.zip(
@@ -68,7 +67,33 @@ getDocData = () -> {
               (elt) -> [elt]
           )
         )
-    )
 }
 
-
+getDocMentionData = (doc, mentions) ->
+    console.log("GET DOC MENTIONS DATA: ")
+    console.log("---------------------- ")
+    console.log(mentions)
+    s = {
+        text: doc.text
+        entities:
+            _.zip(
+              # index with 'T'
+              _.map(_.range(doc.tstarts.length), (elt) -> "T" + elt)
+              # tag
+              doc.tpos,
+              _.map(
+                  _.zip(
+                      # start offsets
+                      doc.sstarts,
+                      # end offsets
+                      _.map(_.zip(doc.sstarts, doc.slengths), (elt) -> elt[0] + elt[1])
+                  )
+                  (elt) -> [elt]
+              )
+            )
+    }
+    console.log("get doc: ")
+    console.log(getDocData(doc))
+    console.log("get doc mentions: ")
+    console.log(JSON.stringify(s))
+    s

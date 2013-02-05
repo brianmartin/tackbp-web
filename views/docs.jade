@@ -7,7 +7,7 @@ block content
     var success = function(data, textStatus, jqXHR) {
         console.log(data.results);
         _.each(data.results, function(doc) {
-            $("#doc-list").append('<p><a href="http://localhost:3000/doc?id=' + doc._id.$oid + '">' + doc.name + '</a></p>')
+            $("#doc-list").append('<p><a href="/doc?id=' + doc._id.$oid + '">' + doc.name + '</a></p>')
         })
     };
 
