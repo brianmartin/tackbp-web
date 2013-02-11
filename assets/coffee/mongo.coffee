@@ -6,7 +6,7 @@ MONGOOSE = "http://localhost:27080"
 
 mongoQuery = (query, _success, _error) ->
     q = encodeURI(JSON.stringify(query))
-    $.ajax MONGOOSE+"/DEFT/docs/_find?criteria="+q,
+    $.ajax MONGOOSE+"/DEFT/docs/_find?batch_size=10000&criteria="+q,
         type: 'GET'
         dataType: 'jsonp'
         error: _error
@@ -26,7 +26,7 @@ getMongoDoc = (id, _success) ->
 
 getMongoDocMentions = (id, _success) ->
     q = encodeURI(JSON.stringify({"doc": {"$oid": id}}))
-    $.ajax MONGOOSE+"/DEFT/docMentions/_find?criteria="+q,
+    $.ajax MONGOOSE+"/DEFT/docMentions/_find?batch_size=10000&criteria="+q,
         type: 'GET'
         dataType: 'jsonp'
         error: (jqXHR, textStatus, errorThrown) ->

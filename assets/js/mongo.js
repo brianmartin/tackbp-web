@@ -10,7 +10,7 @@ MONGOOSE = "http://localhost:27080";
 mongoQuery = function(query, _success, _error) {
   var q;
   q = encodeURI(JSON.stringify(query));
-  return $.ajax(MONGOOSE + "/DEFT/docs/_find?criteria=" + q, {
+  return $.ajax(MONGOOSE + "/DEFT/docs/_find?batch_size=10000&criteria=" + q, {
     type: 'GET',
     dataType: 'jsonp',
     error: _error,
@@ -39,7 +39,7 @@ getMongoDocMentions = function(id, _success) {
       "$oid": id
     }
   }));
-  return $.ajax(MONGOOSE + "/DEFT/docMentions/_find?criteria=" + q, {
+  return $.ajax(MONGOOSE + "/DEFT/docMentions/_find?batch_size=10000&criteria=" + q, {
     type: 'GET',
     dataType: 'jsonp',
     error: function(jqXHR, textStatus, errorThrown) {

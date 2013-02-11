@@ -10,8 +10,8 @@ webFontURLs = [bratLocation + '/static/fonts/Astloch-Bold.ttf', bratLocation + '
 collData = {
   entity_types: [
     {
-      type: 'POS',
-      labels: ['NNP'],
+      type: 'Mention',
+      labels: ['Mention', 'M'],
       bgColor: "#7fa2ff",
       borderColor: 'darken'
     }
@@ -20,10 +20,10 @@ collData = {
 
 getDocData = function(doc) {
   return {
-    text: doc.text,
+    text: doc.text.replace(/(\r\n|\n|\r)/gm, " "),
     entities: _.zip(_.map(_.range(doc.tstarts.length), function(elt) {
       return "T" + elt;
-    }), doc.tpos, _.map(_.zip(doc.sstarts, _.map(_.zip(doc.sstarts, doc.slengths), function(elt) {
+    }), doc.tpos, _.map(_.zip(doc.tstarts, _.map(_.zip(doc.tstarts, doc.tlengths), function(elt) {
       return elt[0] + elt[1];
     })), function(elt) {
       return [elt];
@@ -32,23 +32,30 @@ getDocData = function(doc) {
 };
 
 getDocMentionData = function(doc, mentions) {
-  var s;
-  console.log("GET DOC MENTIONS DATA: ");
-  console.log("---------------------- ");
-  console.log(mentions);
-  s = {
-    text: doc.text,
-    entities: _.zip(_.map(_.range(doc.tstarts.length), function(elt) {
+  var mends_char, mends_tok, mlengths_tok, mstarts_char, mstarts_tok;
+  mstarts_tok = _.map(mentions, function(elt) {
+    return elt.start;
+  });
+  mlengths_tok = _.map(mentions, function(elt) {
+    return elt.length;
+  });
+  mends_tok = _.map(_.zip(mstarts_tok, mlengths_tok), function(elt) {
+    return elt[0] + elt[1] - 1;
+  });
+  mstarts_char = _.map(mstarts_tok, function(elt) {
+    return doc.tstarts[elt];
+  });
+  mends_char = _.map(mends_tok, function(elt) {
+    return doc.tstarts[elt] + doc.tlengths[elt];
+  });
+  return {
+    text: doc.text.replace(/(\r\n|\n|\r)/gm, " "),
+    entities: _.zip(_.map(_.range(mentions.length), function(elt) {
       return "T" + elt;
-    }), doc.tpos, _.map(_.zip(doc.sstarts, _.map(_.zip(doc.sstarts, doc.slengths), function(elt) {
-      return elt[0] + elt[1];
-    })), function(elt) {
+    }), _.map(mentions, function(elt) {
+      return "Mention";
+    }), _.map(_.zip(mstarts_char, mends_char), function(elt) {
       return [elt];
     }))
   };
-  console.log("get doc: ");
-  console.log(getDocData(doc));
-  console.log("get doc mentions: ");
-  console.log(JSON.stringify(s));
-  return s;
 };

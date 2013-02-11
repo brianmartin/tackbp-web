@@ -3,10 +3,21 @@ extends layout
 block content
   a(href="/docs") All docs
   h1= title
+  p(id="views")
   div(id="pos-div")
 
   script(type="text/javascript")
     init = function () {
+      // add links to various views
+      var views = [
+        ["mention"],
+        ["pos"]
+      ];
+      $("#views").append("Views: ")
+      for (var i = 0; i < views.length; i++) {
+          $("#views").append('<a href="/doc?id=' + getParams().id + '&view=' + views[i] + '">' + views[i] + '</a>   ');
+      }
+
       // get the doc id from the parameters
       var id = getParams().id;
       var view = getParams().view;
@@ -15,7 +26,11 @@ block content
       if (view === "mention") {
         getMongoDocAndMentions(id, function (doc, mentions) { renderDocAndMentions(doc, mentions, getDocMentionData) });
       }
+      else if (view === "pos"){
+        getMongoDoc(id, function (doc) { renderDoc(doc, getDocData) });
+      }
       else {
+        // "pos" is the default
         getMongoDoc(id, function (doc) { renderDoc(doc, getDocData) });
       }
     }

@@ -28,8 +28,8 @@ webFontURLs = [
 # this doesnt seem to be working
 collData = {
     entity_types: [ {
-            type   : 'POS',
-            labels : ['NNP'],
+            type   : 'Mention',
+            labels : ['Mention', 'M'],
             # Blue is a nice colour for a person?
             bgColor: "#7fa2ff",
             # Use a slightly darker version of the bgColor for the border
@@ -52,48 +52,45 @@ collData = {
 #  }
 
 getDocData = (doc) -> {
-    text: doc.text
-    entities:
+    text: doc.text.replace(/(\r\n|\n|\r)/gm," ")
+    entities: (
         _.zip(
           _.map(_.range(doc.tstarts.length), (elt) -> "T" + elt)
           doc.tpos,
           _.map(
               _.zip(
                   # start offsets
-                  doc.sstarts,
+                  doc.tstarts,
                   # end offsets
-                  _.map(_.zip(doc.sstarts, doc.slengths), (elt) -> elt[0] + elt[1])
+                  _.map(_.zip(doc.tstarts, doc.tlengths), (elt) -> elt[0] + elt[1])
               )
               (elt) -> [elt]
           )
         )
+    )
 }
 
 getDocMentionData = (doc, mentions) ->
-    console.log("GET DOC MENTIONS DATA: ")
-    console.log("---------------------- ")
-    console.log(mentions)
-    s = {
-        text: doc.text
+    mstarts_tok  = _.map(mentions, (elt) -> elt.start)
+    mlengths_tok = _.map(mentions, (elt) -> elt.length)
+    mends_tok    = _.map(_.zip(mstarts_tok, mlengths_tok), (elt) -> elt[0] + elt[1] - 1)
+
+    mstarts_char  = _.map(mstarts_tok, (elt) -> doc.tstarts[elt])
+    mends_char    = _.map(mends_tok, (elt) -> doc.tstarts[elt] + doc.tlengths[elt])
+
+    {
+        text: doc.text.replace(/(\r\n|\n|\r)/gm," ")
         entities:
             _.zip(
-              # index with 'T'
-              _.map(_.range(doc.tstarts.length), (elt) -> "T" + elt)
+              _.map(_.range(mentions.length), (elt) -> "T" + elt)
               # tag
-              doc.tpos,
+              _.map(mentions, (elt) -> "Mention"),
               _.map(
                   _.zip(
-                      # start offsets
-                      doc.sstarts,
-                      # end offsets
-                      _.map(_.zip(doc.sstarts, doc.slengths), (elt) -> elt[0] + elt[1])
+                      mstarts_char,
+                      mends_char
                   )
                   (elt) -> [elt]
               )
             )
     }
-    console.log("get doc: ")
-    console.log(getDocData(doc))
-    console.log("get doc mentions: ")
-    console.log(JSON.stringify(s))
-    s
