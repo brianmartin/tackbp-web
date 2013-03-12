@@ -29,7 +29,7 @@ webFontURLs = [
 collData = {
     entity_types: [ {
             type   : 'Mention',
-            labels : ['Mention', 'M'],
+            labels : ['Ment', 'M'],
             # Blue is a nice colour for a person?
             bgColor: "#7fa2ff",
             # Use a slightly darker version of the bgColor for the border
@@ -84,7 +84,7 @@ getDocMentionData = (doc, mentions) ->
             _.zip(
               _.map(_.range(mentions.length), (elt) -> "T" + elt)
               # tag
-              _.map(mentions, (elt) -> "Mention"),
+              _.map(mentions, (elt) -> "M-" + elt.docEntity),
               _.map(
                   _.zip(
                       mstarts_char,

@@ -11,7 +11,7 @@ collData = {
   entity_types: [
     {
       type: 'Mention',
-      labels: ['Mention', 'M'],
+      labels: ['Ment', 'M'],
       bgColor: "#7fa2ff",
       borderColor: 'darken'
     }
@@ -53,7 +53,7 @@ getDocMentionData = function(doc, mentions) {
     entities: _.zip(_.map(_.range(mentions.length), function(elt) {
       return "T" + elt;
     }), _.map(mentions, function(elt) {
-      return "Mention";
+      return "M-" + elt.docEntity;
     }), _.map(_.zip(mstarts_char, mends_char), function(elt) {
       return [elt];
     }))

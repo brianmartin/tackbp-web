@@ -1,8 +1,8 @@
 global_doc = []
 global_doc_mentions = []
 
-# MONGOOSE = "http://blake.cs.umass.edu:27080"
-MONGOOSE = "http://localhost:27080"
+MONGOOSE = "http://blake.cs.umass.edu:27080"
+#MONGOOSE = "http://localhost:27080"
 
 mongoQuery = (query, _success, _error) ->
     q = encodeURI(JSON.stringify(query))
@@ -46,7 +46,7 @@ getMongoDocAndMentions = (id, _success) ->
 
 getMongoDocList = (_success) ->
     q = encodeURI(JSON.stringify(["name"]))
-    $.ajax MONGOOSE+"/DEFT/docs/_find?fields="+q,
+    $.ajax MONGOOSE+"/DEFT/docs/_find?batch_size=1000&fields="+q,
         type: 'GET'
         dataType: 'jsonp'
         error: (jqXHR, textStatus, errorThrown) ->
@@ -77,16 +77,16 @@ getDocData = (doc) -> {
     )
 }
 
-collData = {
-    entity_types: [ {
-            type   : 'Person',
-            labels : ['Person', 'Per'],
-            # Blue is a nice colour for a person?
-            bgColor: "#7fa2ff",
-            # Use a slightly darker version of the bgColor for the border
-            borderColor: 'darken'
-    } ],
-}
+# collData = {
+#     entity_types: [ {
+#             type   : 'Person',
+#             labels : ['Person', 'Per'],
+#             # Blue is a nice colour for a person?
+#             bgColor: "#7fa2ff",
+#             # Use a slightly darker version of the bgColor for the border
+#             borderColor: 'darken'
+#     } ],
+# }
 
 renderDoc = (doc, getData) ->
     console.log ("RENDER: ")
@@ -109,14 +109,38 @@ renderDocAndMentions = (doc, mentions, getData) ->
     console.log(JSON.stringify(doc))
     console.log("Mentions:")
     console.log(JSON.stringify(mentions))
+
     head.ready(() ->
+
+        mentionData = getData(doc, mentions)
+
+        console.log("mentionData")
+        console.log(mentionData)
+        console.log(mentionData.entities[0])
+
+        collData = {
+            entity_types: _.map(_.uniq(_.map(mentions, (elt) -> elt.docEntity)), (elt) ->
+                    {
+                            type   : 'M-' + elt,
+                            labels : ['M' + elt],
+                            # Blue is a nice colour for a person?
+                            bgColor: '#'+Math.floor(Math.random()*16777215).toString(16),
+                            # Use a slightly darker version of the bgColor for the border
+                            borderColor: 'darken'
+                    }
+                )
+        }
+
+        console.log("collData")
+        console.log(collData)
+
         Util.embed(
             # id of the div element where brat should embed the visualisations
             'pos-div',
             # object containing collection data
             collData,
             # object containing document data
-            getData(doc, mentions),
+            mentionData,
             # Array containing locations of the visualisation fonts
             webFontURLs
         )
