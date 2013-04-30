@@ -3,6 +3,12 @@ tackbp-web
 
 A web front-end for examining mention provenance.
 
+To prepare:
+```
+  git submodule init
+  git submodule update
+```
+
 To run:
 
 ```
