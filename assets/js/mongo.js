@@ -64,7 +64,7 @@ getMongoDocAndMentions = function(id, _success) {
 getMongoDocList = function(_success) {
   var q;
   q = encodeURI(JSON.stringify(["name"]));
-  return $.ajax(MONGOOSE + "/DEFT/docs/_find?batch_size=1000&fields=" + q, {
+  return $.ajax(MONGOOSE + "/DEFT/docs/_find?batch_size=100&fields=" + q, {
     type: 'GET',
     dataType: 'jsonp',
     error: function(jqXHR, textStatus, errorThrown) {

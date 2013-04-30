@@ -46,7 +46,7 @@ getMongoDocAndMentions = (id, _success) ->
 
 getMongoDocList = (_success) ->
     q = encodeURI(JSON.stringify(["name"]))
-    $.ajax MONGOOSE+"/DEFT/docs/_find?batch_size=1000&fields="+q,
+    $.ajax MONGOOSE+"/DEFT/docs/_find?batch_size=100&fields="+q,
         type: 'GET'
         dataType: 'jsonp'
         error: (jqXHR, textStatus, errorThrown) ->
